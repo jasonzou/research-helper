@@ -20,11 +20,11 @@
         >
           <!-- icons do not render properly using the normal way -->
           <!-- I need to render icons in templates -->
-          <q-icon :name="toggleBtn._icon">
+          <!-- <q-icon :name="toggleBtn._icon">
             <q-tooltip>
               {{ toggleBtn.tooltip }}
             </q-tooltip>
-          </q-icon>
+          </q-icon> -->
         </template>
       </q-btn-toggle>
     </div>
@@ -101,7 +101,7 @@
 </template>
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
-import pluginManager from "src/backend/plugin";
+// import pluginManager from "src/backend/plugin";
 import { Button, ComponentName, ToggleButton } from "src/backend/database";
 import { useI18n } from "vue-i18n";
 import { useStateStore } from "src/stores/appState";
@@ -140,13 +140,13 @@ watch(
 );
 
 // whenever the status of plugins are changed, reload the plugins
-watch(
-  pluginManager.statusMap,
-  (_) => {
-    mountBtns();
-  },
-  { deep: true }
-);
+// watch(
+//   // pluginManager.statusMap,
+//   (_) => {
+//     mountBtns();
+//   },
+//   { deep: true }
+// );
 
 function onPluginBtnClick(btn: Button) {
   clickedBtnUid.value = btn.uid;
@@ -154,23 +154,23 @@ function onPluginBtnClick(btn: Button) {
 }
 
 function mountBtns() {
-  let buttons = pluginManager.getBtns(ComponentName.RIBBON);
-  pluginBtns.value = buttons.btns;
-  toggleBtns.value = [];
-  toggleBtns.value.push({
-    _icon: "account_tree",
-    value: "projectNavigator",
-    tooltip: t("openedProjects"),
-    slot: "projectNavigator",
-  });
-  for (let toggleBtn of buttons.toggleBtns) {
-    toggleBtns.value.push({
-      _icon: toggleBtn.icon,
-      value: toggleBtn.uid,
-      tooltip: toggleBtn.tooltip,
-      slot: toggleBtn.uid,
-    });
-  }
+  // let buttons = pluginManager.getBtns(ComponentName.RIBBON);
+  // pluginBtns.value = buttons.btns;
+  // toggleBtns.value = [];
+  // toggleBtns.value.push({
+  //   _icon: "account_tree",
+  //   value: "projectNavigator",
+  //   tooltip: t("openedProjects"),
+  //   slot: "projectNavigator",
+  // });
+  // for (let toggleBtn of buttons.toggleBtns) {
+  //   toggleBtns.value.push({
+  //     _icon: toggleBtn.icon,
+  //     value: toggleBtn.uid,
+  //     tooltip: toggleBtn.tooltip,
+  //     slot: toggleBtn.uid,
+  //   });
+  // }
 }
 
 onMounted(() => {
@@ -178,11 +178,11 @@ onMounted(() => {
 
   // check if update is available
   // if available, show a blue dot on settings icon
-  setTimeout(() => {
-    window.updater.updateAvailable((event, isAvailable: boolean) => {
-      isUpdateAvailable.value = isAvailable;
-    });
-  }, 1000);
+  // setTimeout(() => {
+  //   // window.updater.updateAvailable((event, isAvailable: boolean) => {
+  //   //   isUpdateAvailable.value = isAvailable;
+  //   // });
+  // }, 1000);
 });
 </script>
 <style scoped lang="scss">

@@ -77,7 +77,7 @@ import {
 } from "vue";
 import { useI18n } from "vue-i18n";
 import { EventBus, debounce } from "quasar";
-import pluginManager from "src/backend/plugin";
+// import pluginManager from "src/backend/plugin";
 
 interface PageItem {
   _id: string;

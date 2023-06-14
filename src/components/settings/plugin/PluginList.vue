@@ -22,7 +22,7 @@ import { onMounted, ref, watch } from "vue";
 import { PluginMeta } from "src/backend/database";
 import ActionBar from "./ActionBar.vue";
 import PluginCard from "./PluginCard.vue";
-import pluginManager from "src/backend/plugin";
+// import pluginManager from "src/backend/plugin";
 
 const props = defineProps({
   isLocal: { type: Boolean, required: true },

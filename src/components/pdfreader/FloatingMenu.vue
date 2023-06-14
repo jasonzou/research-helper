@@ -50,7 +50,7 @@ import { ComponentName, ToggleButton } from "src/backend/database";
 import { copyToClipboard } from "quasar";
 import ColorPicker from "./ColorPicker.vue";
 import FloatingMenuView from "./FloatingMenuView.vue";
-import pluginManager from "src/backend/plugin";
+// import pluginManager from "src/backend/plugin";
 import { Button, View } from "src/backend/database";
 import { useStateStore } from "src/stores/appState";
 defineEmits(["highlightText"]);
