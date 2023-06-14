@@ -10,7 +10,7 @@ class GrabToPan {
   constructor(options) {
     this.element = options.element;
     this.document = options.element.ownerDocument;
-    if (typeof options.ignoreTarget === "function") {
+    if (typeof options.ignoreTarget === 'function') {
       this.ignoreTarget = options.ignoreTarget;
     }
     this.onActiveChanged = options.onActiveChanged;
@@ -26,8 +26,8 @@ class GrabToPan {
 
     // This overlay will be inserted in the document when the mouse moves during
     // a grab operation, to ensure that the cursor has the desired appearance.
-    const overlay = (this.overlay = document.createElement("div"));
-    overlay.className = "grab-to-pan-grabbing";
+    const overlay = (this.overlay = document.createElement('div'));
+    overlay.className = 'grab-to-pan-grabbing';
   }
 
   /**
@@ -36,8 +36,8 @@ class GrabToPan {
   activate() {
     if (!this.active) {
       this.active = true;
-      this.element.addEventListener("mousedown", this._onMouseDown, true);
-      this.element.style.cursor = "grab";
+      this.element.addEventListener('mousedown', this._onMouseDown, true);
+      this.element.style.cursor = 'grab';
       this.onActiveChanged?.(true);
     }
   }
@@ -48,7 +48,7 @@ class GrabToPan {
   deactivate() {
     if (this.active) {
       this.active = false;
-      this.element.removeEventListener("mousedown", this._onMouseDown, true);
+      this.element.removeEventListener('mousedown', this._onMouseDown, true);
       this._endPan();
       this.onActiveChanged?.(false);
     }
@@ -72,7 +72,7 @@ class GrabToPan {
   ignoreTarget(node) {
     // Check whether the clicked element is, a child of, an input element/link.
     return node.matches(
-      "a[href], a[href] *, input, textarea, button, button *, select, option"
+      'a[href], a[href] *, input, textarea, button, button *, select, option'
     );
   }
 
@@ -94,13 +94,13 @@ class GrabToPan {
     this.scrollTopStart = this.element.scrollTop;
     this.clientXStart = event.clientX;
     this.clientYStart = event.clientY;
-    this.document.addEventListener("mousemove", this._onMouseMove, true);
-    this.document.addEventListener("mouseup", this._endPan, true);
+    this.document.addEventListener('mousemove', this._onMouseMove, true);
+    this.document.addEventListener('mouseup', this._endPan, true);
     // When a scroll event occurs before a mousemove, assume that the user
     // dragged a scrollbar (necessary for Opera Presto, Safari and IE)
     // (not needed for Chrome/Firefox)
-    this.element.addEventListener("scroll", this._endPan, true);
-    this.element.style.cursor = "grabbing";
+    this.element.addEventListener('scroll', this._endPan, true);
+    this.element.style.cursor = 'grabbing';
     event.preventDefault();
     event.stopPropagation();
 
@@ -111,7 +111,7 @@ class GrabToPan {
   }
 
   _onMouseMove(event) {
-    this.element.removeEventListener("scroll", this._endPan, true);
+    this.element.removeEventListener('scroll', this._endPan, true);
     if (!(event.buttons & 1)) {
       // The left mouse button is released.
       this._endPan();
@@ -125,7 +125,7 @@ class GrabToPan {
       this.element.scrollTo({
         top: scrollTop,
         left: scrollLeft,
-        behavior: "instant",
+        behavior: 'instant',
       });
     } else {
       this.element.scrollTop = scrollTop;
@@ -137,10 +137,10 @@ class GrabToPan {
   }
 
   _endPan() {
-    this.element.style.cursor = "grab";
-    this.element.removeEventListener("scroll", this._endPan, true);
-    this.document.removeEventListener("mousemove", this._onMouseMove, true);
-    this.document.removeEventListener("mouseup", this._endPan, true);
+    this.element.style.cursor = 'grab';
+    this.element.removeEventListener('scroll', this._endPan, true);
+    this.document.removeEventListener('mousemove', this._onMouseMove, true);
+    this.document.removeEventListener('mouseup', this._endPan, true);
     // Note: ChildNode.remove doesn't throw if the parentNode is undefined.
     this.overlay.remove();
   }

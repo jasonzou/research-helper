@@ -10,7 +10,7 @@ import {
   ref,
 } from "vue";
 import { ComponentName } from "src/backend/database";
-import pluginManager from "src/backend/plugin";
+// import pluginManager from "src/backend/plugin";
 
 const props = defineProps({
   uid: { type: String, required: true },
