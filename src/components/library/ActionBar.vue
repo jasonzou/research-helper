@@ -99,9 +99,10 @@
 
 <script setup lang="ts">
 // types
-import { computed } from "vue";
-import { debounce } from "quasar";
-import { useStateStore } from "src/stores/appState";
+import { computed } from 'vue';
+import { debounce } from 'quasar';
+import { useStateStore } from 'src/stores/appState';
+import { open } from '@tauri-apps/api/dialog';
 
 const stateStore = useStateStore();
 
@@ -109,12 +110,12 @@ const props = defineProps({
   searchString: { type: String, required: true },
 });
 const emit = defineEmits([
-  "update:searchString",
-  "addEmptyProject",
-  "addByFiles",
-  "addByCollection",
-  "showIdentifierDialog",
-  "refreshTable",
+  'update:searchString',
+  'addEmptyProject',
+  'addByFiles',
+  'addByCollection',
+  'showIdentifierDialog',
+  'refreshTable',
 ]);
 
 const searchText = computed({
@@ -122,40 +123,40 @@ const searchText = computed({
     return props.searchString;
   },
   set: debounce((text: string) => {
-    emit("update:searchString", text);
+    emit('update:searchString', text);
   }, 500),
 });
 
 async function addByFiles(type: string) {
   let filePaths: string[] | undefined;
   switch (type) {
-    case "file":
-      filePaths = window.fileBrowser.showFilePicker({
-        multiSelections: true,
-        filters: [{ name: "*.pdf", extensions: ["pdf"] }],
+    case 'file':
+      filePaths = await open({
+        multiple: true,
+        filters: [{ name: 'pdf files', extensions: ['pdf'] }],
       });
       if (!filePaths) return;
-      emit("addByFiles", filePaths);
+      emit('addByFiles', filePaths);
       break;
-    case "collection":
+    case 'collection':
       filePaths = window.fileBrowser.showFilePicker({
         multiSelections: false,
         filters: [
-          { name: "*.bib, *.ris, *.json", extensions: ["bib", "ris", "json"] },
+          { name: '*.bib, *.ris, *.json', extensions: ['bib', 'ris', 'json'] },
         ],
       });
       if (!filePaths) return;
-      emit("addByCollection", filePaths[0]);
+      emit('addByCollection', filePaths[0]);
       break;
   }
 }
 
 function addEmpty() {
-  emit("addEmptyProject");
+  emit('addEmptyProject');
 }
 
 function addByID() {
-  emit("showIdentifierDialog");
+  emit('showIdentifierDialog');
 }
 </script>
 <style lang="scss">

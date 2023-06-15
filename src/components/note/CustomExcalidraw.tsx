@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   Excalidraw,
   MainMenu,
   serializeAsJSON,
   serializeLibraryAsJSON,
-} from "@excalidraw/excalidraw";
-import "src/css/excalidraw/theme.scss";
-import { debounce, uid } from "quasar";
-import { useStateStore } from "src/stores/appState";
-import { getNote } from "src/backend/project/note";
-import { ExcalidrawElement } from "@excalidraw/excalidraw/types/element/types";
+} from '@excalidraw/excalidraw';
+import 'src/css/excalidraw/theme.scss';
+import { debounce, uid } from 'quasar';
+import { useStateStore } from 'src/stores/appState';
+import { getNote } from 'src/backend/project/note';
+import { ExcalidrawElement } from '@excalidraw/excalidraw/types/element/types';
 import {
   AppState as ExcalidrawState,
   BinaryFiles,
   ExcalidrawImperativeAPI,
   LibraryItems,
-} from "@excalidraw/excalidraw/types/types";
-import { Note } from "src/backend/database";
+} from '@excalidraw/excalidraw/types/types';
+import { Note } from 'src/backend/database';
 
 interface InitialData {
   elements: ExcalidrawElement[];
@@ -25,8 +25,11 @@ interface InitialData {
   libraryItems: LibraryItems;
 }
 
-const fs = window.fs;
-const path = window.path;
+import { exists, createDir, readBinaryFile, writeBinaryFile } from '@tauri-apps/api/fs';
+import { join } from '@tauri-apps/api/path';
+
+// const fs = window.fs;
+// const path = window.path;
 const stateStore = useStateStore();
 
 export default function CustomExcalidraw(props: {
@@ -35,13 +38,13 @@ export default function CustomExcalidraw(props: {
 }) {
   const [excalidrawAPI, setExcalidrawAPI] =
     useState<ExcalidrawImperativeAPI | null>(null);
-  const [notePath, setNotePath] = useState<string>("");
+  const [notePath, setNotePath] = useState<string>('');
   const [ready, setReady] = useState<boolean>(false);
 
   function loadExcalidraw(): InitialData | undefined {
     if (!notePath) return;
     try {
-      let scene = JSON.parse(fs.readFileSync(notePath, "utf8"));
+      let scene = JSON.parse(await readBinaryFile(notePath));
       if (!scene.appState.theme)
         scene.appState.theme = stateStore.settings.theme;
       return scene as InitialData;
@@ -57,10 +60,10 @@ export default function CustomExcalidraw(props: {
   ) {
     if (!notePath && !ready) return;
     try {
-      let jsonString = serializeAsJSON(elements, state, files, "local");
+      let jsonString = serializeAsJSON(elements, state, files, 'local');
       let json = JSON.parse(jsonString);
       json.appState.theme = state.theme;
-      fs.writeFileSync(notePath, JSON.stringify(json, null, 2));
+      await writeBinaryFile(notePath, JSON.stringify(json, null, 2));
     } catch (error) {
       console.log(error);
     }
@@ -72,16 +75,16 @@ export default function CustomExcalidraw(props: {
     files: BinaryFiles
   ) => void;
 
-  function loadExcalidrawLibrary(): LibraryItems {
+  async function loadExcalidrawLibrary(): LibraryItems {
     let storagePath = stateStore.settings.storagePath;
-    let hiddenFolder = path.join(storagePath, ".research-helper");
-    let filePath = path.join(hiddenFolder, "library.excalidrawlib");
-    if (!fs.existsSync(filePath)) return [] as LibraryItems;
-    return JSON.parse(fs.readFileSync(filePath, "utf8"))
+    let hiddenFolder = join(storagePath, '.research-helper');
+    let filePath = join(hiddenFolder, 'library.excalidrawlib');
+    if (!await exists(filePath)) return [] as LibraryItems;
+    return JSON.parse(await readBinaryFile(filePath))
       .libraryItems as LibraryItems;
   }
 
-  function saveExcalidrawLibrary(items: LibraryItems) {
+  async function saveExcalidrawLibrary(items: LibraryItems) {
     // do not save anything when loading library
     if (!ready) {
       setTimeout(() => {
@@ -91,9 +94,9 @@ export default function CustomExcalidraw(props: {
     }
     let storagePath = stateStore.settings.storagePath;
     try {
-      let hiddenFolder = path.join(storagePath, ".research-helper");
-      if (!fs.existsSync(hiddenFolder)) fs.mkdirSync(hiddenFolder);
-      let filePath = path.join(hiddenFolder, "library.excalidrawlib");
+      let hiddenFolder = join(storagePath, '.research-helper');
+      if (!await exists(hiddenFolder)) await createDir(hiddenFolder);
+      let filePath = join(hiddenFolder, 'library.excalidrawlib');
       let jsonString = serializeLibraryAsJSON(items);
       fs.writeFileSync(filePath, jsonString);
     } catch (error) {

@@ -97,22 +97,23 @@
 </template>
 <script setup lang="ts">
 // types
-import { computed, ref, watch } from "vue";
-import { Project, Note } from "src/backend/database";
-import ProgressDialog from "./ProgressDialog.vue";
+import { computed, ref, watch } from 'vue';
+import { Project, Note } from 'src/backend/database';
+import ProgressDialog from './ProgressDialog.vue';
 // db
-import { useStateStore } from "src/stores/appState";
-import { updateAppState } from "src/backend/appState";
-import { changePath } from "src/backend/project/file";
-import { getAllProjects } from "src/backend/project/project";
-import { getAllNotes } from "src/backend/project/note";
-import { db } from "src/backend/database";
-import { useI18n } from "vue-i18n";
-import { useQuasar } from "quasar";
+import { useStateStore } from 'src/stores/appState';
+import { updateAppState } from 'src/backend/appState';
+import { changePath } from 'src/backend/project/file';
+import { getAllProjects } from 'src/backend/project/project';
+import { getAllNotes } from 'src/backend/project/note';
+import { db } from 'src/backend/database';
+import { useI18n } from 'vue-i18n';
+import { useQuasar } from 'quasar';
+import { open } from '@tauri-apps/api/dialog';
 // import pluginManager from "src/backend/plugin";
 
 const stateStore = useStateStore();
-const { t, locale } = useI18n({ useScope: "global" });
+const { t, locale } = useI18n({ useScope: 'global' });
 const $q = useQuasar();
 
 // progressDialog
@@ -121,13 +122,13 @@ const errors = ref<Error[]>([]);
 const progress = ref(0.0);
 
 // options
-const languageOptions = ref<{ value: "en_US" | "zh_CN"; label: string }[]>([
-  { value: "en_US", label: "English (en_US)" },
-  { value: "zh_CN", label: "中文 (zh_CN)" },
+const languageOptions = ref<{ value: 'en_US' | 'zh_CN'; label: string }[]>([
+  { value: 'en_US', label: 'English (en_US)' },
+  { value: 'zh_CN', label: '中文 (zh_CN)' },
 ]);
-const themeOptions = ref<{ value: "dark" | "light"; label: string }[]>([
-  { value: "dark", label: t("dark") },
-  { value: "light", label: t("light") },
+const themeOptions = ref<{ value: 'dark' | 'light'; label: string }[]>([
+  { value: 'dark', label: t('dark') },
+  { value: 'light', label: t('light') },
 ]);
 
 watch(
@@ -149,7 +150,7 @@ const language = computed({
     }
     return result;
   },
-  set(option: { value: "en_US" | "zh_CN"; label: string }) {
+  set(option: { value: 'en_US' | 'zh_CN'; label: string }) {
     stateStore.settings.language = option.value;
     changeLanguage(option.value);
   },
@@ -165,7 +166,7 @@ const theme = computed({
     }
     return result;
   },
-  set(option: { value: "dark" | "light"; label: string }) {
+  set(option: { value: 'dark' | 'light'; label: string }) {
     stateStore.settings.theme = option.value;
     changeTheme(option.value);
   },
@@ -190,17 +191,17 @@ function changeFontSize(size: number) {
   saveAppState();
 }
 
-function changeLanguage(_locale: "en_US" | "zh_CN") {
+function changeLanguage(_locale: 'en_US' | 'zh_CN') {
   locale.value = _locale;
   saveAppState();
 }
 
-function changeTheme(theme: "dark" | "light") {
+function changeTheme(theme: 'dark' | 'light') {
   switch (theme) {
-    case "dark":
+    case 'dark':
       $q.dark.set(true);
       break;
-    case "light":
+    case 'light':
       $q.dark.set(false);
       break;
   }
@@ -208,9 +209,9 @@ function changeTheme(theme: "dark" | "light") {
 }
 
 async function showFolderPicker() {
-  let result = window.fileBrowser.showFolderPicker();
-  if (result !== undefined && !!result[0]) {
-    let storagePath = result[0]; // do not update texts in label yet
+  let result = await open ({ directory: true});
+  if (result !== undefined ) {
+    let storagePath = result; // do not update texts in label yet
     await changeStoragePath(storagePath);
   }
 }
@@ -236,8 +237,8 @@ async function moveFiles(oldPath: string, newPath: string) {
   let current = 0;
 
   // move hidden folders
-  let oldHiddenFolder = window.path.join(oldPath, ".research-helper");
-  let newHiddenFolder = window.path.join(newPath, ".research-helper");
+  let oldHiddenFolder = window.path.join(oldPath, '.research-helper');
+  let newHiddenFolder = window.path.join(newPath, '.research-helper');
   let error = changePath(oldHiddenFolder, newHiddenFolder);
   if (error) errors.value.push(error);
   current++;

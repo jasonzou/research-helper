@@ -1,9 +1,11 @@
-import * as pdfjsLib from "pdfjs-dist";
-import * as pdfjsViewer from "pdfjs-dist/web/pdf_viewer";
+import * as pdfjsLib from 'pdfjs-dist';
+import * as pdfjsViewer from 'pdfjs-dist/web/pdf_viewer';
 pdfjsLib.GlobalWorkerOptions.workerSrc =
-  "node_modules/pdfjs-dist/build/pdf.worker.min.js";
+  'node_modules/pdfjs-dist/build/pdf.worker.min.js';
 
-import { GrabToPan } from "./grabToPan";
+import { GrabToPan } from './grabToPan';
+import { readBinaryFile } from '@tauri-apps/api/fs';
+
 
 class PeekManager {
   handtool: GrabToPan;
@@ -29,7 +31,7 @@ class PeekManager {
     });
     pdfLinkService.setViewer(pdfSinglePageViewer);
 
-    container.addEventListener("mousewheel", (e) =>
+    container.addEventListener('mousewheel', (e) =>
       this._handleZoom(e as WheelEvent)
     );
     this.handtool = new GrabToPan({ element: container });
@@ -39,20 +41,20 @@ class PeekManager {
     this.linkService = pdfLinkService;
   }
 
-  loadPDF(filePath: string) {
+  async loadPDF(filePath: string) {
     // close any existing popup window first
     this.closeContainer();
 
     // load pdf
     // load cmaps for rendering translated fonts
-    let cMapUrl = "";
+    let cMapUrl = '';
     if (process.env.DEV)
-      cMapUrl = new URL("../../../cmaps/", import.meta.url).href;
+      cMapUrl = new URL('../../../cmaps/', import.meta.url).href;
     else {
-      console.log("url?", import.meta.url);
-      cMapUrl = new URL("cmaps/", import.meta.url).href;
+      console.log('url?', import.meta.url);
+      cMapUrl = new URL('cmaps/', import.meta.url).href;
     }
-    let buffer = window.fs.readFileSync(filePath);
+    const buffer = await readBinaryFile(filePath);
     let loadingTask = pdfjsLib.getDocument({
       data: buffer,
       cMapUrl: cMapUrl,
@@ -75,7 +77,7 @@ class PeekManager {
         // this section tag has class linkAnnotation
         // and it is in annotationLayer of pdfjs
         let linkAnnot = link.parentElement as HTMLElement;
-        this.pdfViewer.linkService.setHash(link.href.split("#")[1]);
+        this.pdfViewer.linkService.setHash(link.href.split('#')[1]);
         this.showContainer(linkAnnot);
         this.handtool.activate();
       }, 500);
@@ -83,7 +85,7 @@ class PeekManager {
       link.onmouseleave = () => clearTimeout(timeoutId);
     };
     this.container.onmouseleave = () => {
-      this.container.style.display = "none";
+      this.container.style.display = 'none';
     };
   }
 
@@ -123,17 +125,17 @@ class PeekManager {
     }
 
     // position relative to viewerContainer
-    this.container.style.position = "relative";
-    this.container.style.top = top + "px";
-    this.container.style.left = left + "px";
-    this.container.style.width = w + "px";
-    this.container.style.height = h + "px";
-    this.container.style.display = "block";
-    this.container.style.zIndex = "1000";
+    this.container.style.position = 'relative';
+    this.container.style.top = top + 'px';
+    this.container.style.left = left + 'px';
+    this.container.style.width = w + 'px';
+    this.container.style.height = h + 'px';
+    this.container.style.display = 'block';
+    this.container.style.zIndex = '1000';
   }
 
   closeContainer() {
-    this.container.style.display = "none";
+    this.container.style.display = 'none';
   }
 
   private _handleZoom(e: WheelEvent) {

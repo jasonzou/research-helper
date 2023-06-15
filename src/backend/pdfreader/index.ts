@@ -1,11 +1,13 @@
-import * as pdfjsLib from "pdfjs-dist";
-import * as pdfjsViewer from "pdfjs-dist/web/pdf_viewer";
+import * as pdfjsLib from 'pdfjs-dist';
+import * as pdfjsViewer from 'pdfjs-dist/web/pdf_viewer';
 pdfjsLib.GlobalWorkerOptions.workerSrc =
-  "node_modules/pdfjs-dist/build/pdf.worker.min.js";
+  'node_modules/pdfjs-dist/build/pdf.worker.min.js';
 
-import { PeekManager } from "./pdfpeek";
-import { db, PDFSearch, PDFState, SpreadMode, TOCNode } from "../database";
-import { debounce } from "quasar";
+import { PeekManager } from './pdfpeek';
+import { db, PDFSearch, PDFState, SpreadMode, TOCNode } from '../database';
+import { debounce } from 'quasar';
+
+import { readBinaryFile } from '@tauri-apps/api/fs';
 
 class PDFApplication {
   container: HTMLDivElement;
@@ -33,12 +35,12 @@ class PDFApplication {
     });
 
     // l10n resource
-    const link = document.createElement("link");
-    link.rel = "resources";
-    link.type = "application/l10n";
-    link.href = "l10n/en-US/viewer.properties";
+    const link = document.createElement('link');
+    link.rel = 'resources';
+    link.type = 'application/l10n';
+    link.href = 'l10n/en-US/viewer.properties';
     document.head.append(link);
-    const l10n = new pdfjsViewer.GenericL10n("en-US");
+    const l10n = new pdfjsViewer.GenericL10n('en-US');
 
     const pdfViewer = new pdfjsViewer.PDFViewer({
       container,
@@ -61,19 +63,19 @@ class PDFApplication {
     this.pdfDocument = undefined; // initialize in loadPDF
 
     // install internal event listener
-    eventBus.on("pagesinit", () => {
-      this.container.addEventListener("mousewheel", (e) =>
+    eventBus.on('pagesinit', () => {
+      this.container.addEventListener('mousewheel', (e) =>
         this.handleCtrlScroll(e as WheelEvent)
       );
     });
 
-    eventBus.on("annotationlayerrendered", () => {
+    eventBus.on('annotationlayerrendered', () => {
       this.container
-        .querySelectorAll("section.linkAnnotation")
+        .querySelectorAll('section.linkAnnotation')
         .forEach((section) => {
-          let link = section.querySelector("a");
+          let link = section.querySelector('a');
           if (!link) return;
-          if (section.hasAttribute("data-internal-link")) {
+          if (section.hasAttribute('data-internal-link')) {
             // peek internal links
             this.peekManager.peek(link);
           } else {
@@ -93,15 +95,18 @@ class PDFApplication {
   }
 
   async loadPDF(filePath: string) {
+    console.log("eeeeeeeeeeeeeeeeeeeeeeeeeeeeenter loadPDF")
     // load cmaps for rendering translated fonts
-    let cMapUrl = "";
+    let cMapUrl = '';
     if (process.env.DEV)
-      cMapUrl = new URL("../../../cmaps/", import.meta.url).href;
+      cMapUrl = new URL('../../../cmaps/', import.meta.url).href;
     else {
-      console.log("url?", import.meta.url);
-      cMapUrl = new URL("cmaps/", import.meta.url).href;
+      console.log('url?', import.meta.url);
+      cMapUrl = new URL('cmaps/', import.meta.url).href;
     }
-    let buffer = window.fs.readFileSync(filePath);
+    console.log("readddddddddddddddddddy to read")
+    console.log(filePath);
+    let buffer = await readBinaryFile(filePath);
     this.pdfDocument = await pdfjsLib.getDocument({
       data: buffer,
       cMapUrl: cMapUrl,
@@ -116,21 +121,21 @@ class PDFApplication {
   async loadState(projectId: string): Promise<PDFState | undefined> {
     try {
       let result = await db.find({
-        selector: { dataType: "pdfState", projectId: projectId },
+        selector: { dataType: 'pdfState', projectId: projectId },
       });
 
       let state = result.docs[0] as PDFState;
       if (!!!state) {
         state = {
-          dataType: "pdfState",
+          dataType: 'pdfState',
           projectId: projectId,
           pagesCount: 0,
           currentPageNumber: 1,
           currentScale: 1,
-          currentScaleValue: "1",
+          currentScaleValue: '1',
           spreadMode: 0,
-          tool: "cursor",
-          color: "#FFFF00",
+          tool: 'cursor',
+          color: '#FFFF00',
           scrollLeft: 0,
           scrollTop: 0,
         } as PDFState;
@@ -174,7 +179,7 @@ class PDFApplication {
 
   changeScale(params: {
     delta?: number;
-    scaleValue?: "page-width" | "page-height";
+    scaleValue?: 'page-width' | 'page-height';
     scale?: number;
   }) {
     if (!!params.delta) this.pdfViewer.currentScale += params.delta;
@@ -227,7 +232,7 @@ class PDFApplication {
           label: oldNodes[k].title,
           children: _dfs(oldNodes[k].items),
         } as TOCNode;
-        if (typeof oldNodes[k].dest === "string") node.dest = oldNodes[k].dest;
+        if (typeof oldNodes[k].dest === 'string') node.dest = oldNodes[k].dest;
         else {
           let dest = oldNodes[k].dest;
           if (!!dest && dest?.length > 0) node.ref = dest[0];
@@ -274,7 +279,7 @@ class PDFApplication {
   }
 
   searchText(search: PDFSearch) {
-    this.eventBus.dispatch("find", search);
+    this.eventBus.dispatch('find', search);
   }
 
   changeMatch(delta: number) {
@@ -307,7 +312,7 @@ class PDFApplication {
     this.pdfFindController.selected.pageIdx = pageIdx;
     this.pdfFindController.selected.matchIdx = newMatchIdx;
     this.changePageNumber(pageIdx + 1);
-    this.eventBus.dispatch("updatetextlayermatches", {
+    this.eventBus.dispatch('updatetextlayermatches', {
       source: this.pdfFindController,
       pageIndex: pageIdx,
     });

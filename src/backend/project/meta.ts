@@ -4,6 +4,7 @@ import { getProjectsByFolderId } from "./project";
 import { exportFile } from "quasar";
 
 import { Folder, Meta, Project } from "../database";
+import { readBinaryFile } from '@tauri-apps/api/fs';
 
 /**
  * Get artible/book info given an identifier using citation.js
@@ -72,7 +73,7 @@ async function exportMeta(
  * @returns {any} citation data
  */
 async function importMeta(filePath: string): Promise<any> {
-  let data = window.fs.readFileSync(filePath, "utf8");
+  let data = await readBinaryFile(filePath);
   return await getMeta(data, "json");
 }
 

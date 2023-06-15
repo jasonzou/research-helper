@@ -51,7 +51,7 @@
           v-if="showFloatingMenu"
           :style="style"
           @highlightText="(color: string) => {
-              createAnnot(AnnotationType.HIGHLIGHT, color, selectionPage, null); 
+              createAnnot(AnnotationType.HIGHLIGHT, color, selectionPage, null);
               toggleFloatingMenu();
             }"
         />
@@ -82,7 +82,7 @@ import {
   provide,
   onMounted,
   computed,
-} from "vue";
+} from 'vue';
 import {
   Annotation,
   AnnotationType,
@@ -91,12 +91,12 @@ import {
   Project,
   SpreadMode,
   TOCNode,
-} from "src/backend/database";
+} from 'src/backend/database';
 import {
   PDFFindController,
   PDFPageView,
   PDFViewer,
-} from "pdfjs-dist/web/pdf_viewer";
+} from 'pdfjs-dist/web/pdf_viewer';
 import {
   KEY_updateAnnot,
   KEY_deleteAnnot,
@@ -108,15 +108,15 @@ import {
   KEY_selectedAnnotId,
   KEY_createAnnot,
   KEY_getAnnot,
-} from "./injectKeys";
+} from './injectKeys';
 
-import PDFToolBar from "./PDFToolBar.vue";
-import RightMenu from "./RightMenu.vue";
-import AnnotCard from "./AnnotCard.vue";
-import FloatingMenu from "./FloatingMenu.vue";
+import PDFToolBar from './PDFToolBar.vue';
+import RightMenu from './RightMenu.vue';
+import AnnotCard from './AnnotCard.vue';
+import FloatingMenu from './FloatingMenu.vue';
 
-import { PDFApplication } from "src/backend/pdfreader";
-import { getProject } from "src/backend/project/project";
+import { PDFApplication } from 'src/backend/pdfreader';
+import { getProject } from 'src/backend/project/project';
 
 import {
   getAnnotations,
@@ -126,8 +126,8 @@ import {
   createAnnotation,
   drawAnnotation,
   enableDragToMove,
-} from "src/backend/pdfannotation";
-import { useStateStore } from "src/stores/appState";
+} from 'src/backend/pdfannotation';
+import { useStateStore } from 'src/stores/appState';
 
 const stateStore = useStateStore();
 
@@ -168,13 +168,13 @@ const matchesCount = reactive({ current: -1, total: 0 });
 const pageLabels = ref<string[]>([]);
 const outline = ref<TOCNode[]>([]);
 const annots = ref<Annotation[]>([]);
-const selectedAnnotId = ref("");
+const selectedAnnotId = ref('');
 
 // annot card & colorpicker
 const showAnnotCard = ref(false);
 const showFloatingMenu = ref(false);
 const selectionPage = ref(0);
-const style = ref("");
+const style = ref('');
 
 let pdfApp: PDFApplication;
 
@@ -183,7 +183,7 @@ let pdfApp: PDFApplication;
  */
 async function loadPDF(id: string) {
   project.value = (await getProject(id)) as Project;
-  if (project.value.dataType != "project") return;
+  if (project.value.dataType != 'project') return;
   if (!project.value.path) return; // if no attached file
   // load state before loading pdf
   Object.assign(
@@ -191,6 +191,8 @@ async function loadPDF(id: string) {
     (await pdfApp.loadState(project.value._id)) as PDFState
   );
   annots.value = (await getAnnotations(props.projectId)) as Annotation[];
+  console.log("0000000000000000000000000000000")
+  console.log(project.value.path)
   await pdfApp.loadPDF(project.value.path);
   outline.value = await pdfApp.getTOC();
   pageLabels.value = await pdfApp.getPageLabels();
@@ -205,7 +207,7 @@ function changePageNumber(pageNumber: number) {
 }
 function changeScale(params: {
   delta?: number;
-  scaleValue?: "page-width" | "page-height";
+  scaleValue?: 'page-width' | 'page-height';
   scale?: number;
 }) {
   pdfApp.changeScale(params);
@@ -257,14 +259,14 @@ function setActiveAnnot(annotId: string) {
     (viewerContainer.value as HTMLElement)
       .querySelectorAll(`section[annotation-id="${annotId}"]`)
       .forEach((dom) => {
-        dom.classList.add("activeAnnotation");
+        dom.classList.add('activeAnnotation');
       });
   } else {
     // deselect annotation
     (viewerContainer.value as HTMLElement)
-      .querySelectorAll(".activeAnnotation")
+      .querySelectorAll('.activeAnnotation')
       .forEach((dom) => {
-        dom.classList.remove("activeAnnotation");
+        dom.classList.remove('activeAnnotation');
       });
   }
 }
@@ -306,7 +308,7 @@ async function drawAnnot(annot: Annotation) {
   // click to highlight annotation
   for (let [i, dom] of doms.entries()) {
     dom.onclick = () => {
-      setActiveAnnot(dom.getAttribute("annotation-id") as string);
+      setActiveAnnot(dom.getAttribute('annotation-id') as string);
     };
   }
 
@@ -328,7 +330,7 @@ async function updateAnnot(params: { id: string; data: any }) {
   let annot = (await updateAnnotation(params.id, params.data)) as Annotation;
 
   // update PDFReader UI
-  if ("color" in data) {
+  if ('color' in data) {
     document
       .querySelectorAll(`section[annotation-id="${id}"]`)
       .forEach((dom) => {
@@ -473,7 +475,7 @@ watch(pdfState, (state) => {
 });
 
 watch(selectedAnnotId, (annotId) => {
-  setActiveAnnot("");
+  setActiveAnnot('');
   if (!!!annotId) return;
 
   // scroll to the selected annot
@@ -484,9 +486,9 @@ watch(selectedAnnotId, (annotId) => {
   if (!!dom) {
     // if the dom is already there, scroll into view
     dom.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
-      inline: "nearest",
+      behavior: 'smooth',
+      block: 'nearest',
+      inline: 'nearest',
     });
     setActiveAnnot(annotId);
   } else {
@@ -516,7 +518,7 @@ onMounted(async () => {
     viewerContainer.value as HTMLDivElement,
     peekContainer.value as HTMLDivElement
   );
-  pdfApp.eventBus.on("pagesinit", () => {
+  pdfApp.eventBus.on('pagesinit', () => {
     changePageNumber(pdfState.currentPageNumber);
     changeSpreadMode(pdfState.spreadMode);
     changeScale({ scale: pdfState.currentScale });
@@ -524,7 +526,7 @@ onMounted(async () => {
     ready.value = true;
   });
   pdfApp.eventBus.on(
-    "annotationeditorlayerrendered",
+    'annotationeditorlayerrendered',
     (e: { error: Error | null; pageNumber: number; source: PDFPageView }) => {
       // draw annotations from db
       let annotsOnPage = annots.value.filter(
@@ -536,9 +538,9 @@ onMounted(async () => {
         // determine if user is clicking on an annotation
         if (!ev.target) return;
         let clickedAnnotId: string | null =
-          (ev.target as HTMLElement).getAttribute("annotation-id") ||
+          (ev.target as HTMLElement).getAttribute('annotation-id') ||
           ((ev.target as HTMLElement).parentNode as HTMLElement).getAttribute(
-            "annotation-id"
+            'annotation-id'
           );
         // temporary rectangle for rectangular highlight
         let x1 = ev.clientX;
@@ -550,12 +552,12 @@ onMounted(async () => {
             ?.querySelector(
               `div.page[data-page-number='${pdfState.currentPageNumber}']`
             )
-            ?.querySelector(".annotationEditorLayer") as HTMLElement;
+            ?.querySelector('.annotationEditorLayer') as HTMLElement;
           let layerRect = annotLayer.getBoundingClientRect();
-          tempRect = document.createElement("div");
-          tempRect.style.position = "absolute";
+          tempRect = document.createElement('div');
+          tempRect.style.position = 'absolute';
           tempRect.style.background = pdfState.color;
-          tempRect.style.mixBlendMode = "multiply";
+          tempRect.style.mixBlendMode = 'multiply';
           tempRect.style.left = `${x1 - layerRect.x}px`;
           tempRect.style.top = `${y1 - layerRect.y}px`;
           annotLayer.append(tempRect);
@@ -571,7 +573,7 @@ onMounted(async () => {
             setActiveAnnot(clickedAnnotId);
             toggleAnnotCard();
           } else {
-            setActiveAnnot("");
+            setActiveAnnot('');
             if (pdfState.tool === AnnotationType.CURSOR) {
               // toggle menu under text selection
               toggleFloatingMenu(e.pageNumber);
@@ -595,7 +597,7 @@ onMounted(async () => {
     }
   );
   pdfApp.eventBus.on(
-    "pagechanging",
+    'pagechanging',
     (e: {
       source: PDFViewer;
       pageNumber: number;
@@ -619,7 +621,7 @@ onMounted(async () => {
     }
   );
   pdfApp.eventBus.on(
-    "scalechanging",
+    'scalechanging',
     (e: {
       source: PDFPageView;
       scale: number;
@@ -632,7 +634,7 @@ onMounted(async () => {
   );
   // find controller
   pdfApp.eventBus.on(
-    "updatefindmatchescount",
+    'updatefindmatchescount',
     (e: {
       source: PDFFindController;
       matchesCount: { current: number; total: number };
@@ -643,7 +645,7 @@ onMounted(async () => {
     }
   );
   pdfApp.eventBus.on(
-    "updatetextlayermatches",
+    'updatetextlayermatches',
     (e: { source: PDFFindController; pageIndex: number }) => {
       // if not found, set the matchesCount.total to 0
       let findController = e.source;

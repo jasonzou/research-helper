@@ -140,6 +140,10 @@ import {
 // db
 import { copyToClipboard } from "quasar";
 import { useStateStore } from "src/stores/appState";
+
+import {join} from '@tauri-apps/api/path';
+import { open } from '@tauri-apps/api/dialog';
+
 const stateStore = useStateStore();
 
 const emit = defineEmits(["expandRow"]);
@@ -186,11 +190,11 @@ function copyProjectId() {
   copyToClipboard(stateStore.selected[0]._id);
 }
 
-function showInExplorer() {
+async function showInExplorer() {
   // don't use project.path because it might not exists
   for (let project of stateStore.selected) {
-    let path = window.path.join(stateStore.settings.storagePath, project._id);
-    window.fileBrowser.showFileInFolder(path);
+    let path = join(stateStore.settings.storagePath, project._id);
+    open({defaultPath: await path});
   }
 }
 
