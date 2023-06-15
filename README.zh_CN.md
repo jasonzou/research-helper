@@ -1,5 +1,5 @@
 <p align="center">
-<img src="src/assets/logo.svg" 
+<img src="src/assets/logo.svg"
 style="width: 100px; vertical-align:middle">
 </p>
 
@@ -17,7 +17,7 @@ style="width: 100px; vertical-align:middle">
 
 # 为研究小助手作贡献
 
-研究小助手用[QUASAR](https://quasar.dev)作为框架。这款软件采用了[Vue.js3](https://vuejs.org)加[Electron](https://www.electronjs.org)的组合。
+研究小助手用[QUASAR](https://quasar.dev)作为框架。这款软件采用了[Vue.js3](https://vuejs.org)加[Tauri](https://tauri.app)的组合。
 
 ## 安装依赖
 
@@ -39,7 +39,7 @@ yarn build # 编译测试版
 没有以下的开源项目就没有这款软件
 
 - Quasar
-- Electron
+- Tauri
 - Vue.js
 - citation-js
 - cytoscape

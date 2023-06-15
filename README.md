@@ -1,5 +1,5 @@
 <p align="center">
-<img src="src/assets/logo.svg" 
+<img src="src/assets/logo.svg"
 style="width: 100px; vertical-align:middle">
 </p>
 
@@ -11,7 +11,7 @@ style="width: 100px; vertical-align:middle">
 
 # Research Helper
 
-Research helper is a paper/book management tool. It is a reference management tool with various useful functionalities such as: built-in PDF reader, live markdown note and excalidraw note.
+Research helper is another research manager which has is a reference management tool with various useful functionalities such as: built-in PDF reader, live markdown note and excalidraw note.
 
 ![screenshot.png](./galleries/screenshot.png)
 
@@ -22,8 +22,8 @@ Research Helper uses [QUASAR](https://quasar.dev) as framework. In this project,
 ## Install the dependencies
 
 ```bash
-yarn # strongly recommanded
-# or
+yarn install // strongly recommanded
+// or
 npm install
 ```
 
@@ -39,7 +39,7 @@ yarn build # build the app with debugger
 This project is made possible by the following open source projects.
 
 - Quasar
-- Electron
+- Tauri
 - Vue.js
 - citation-js
 - cytoscape

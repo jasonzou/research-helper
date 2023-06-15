@@ -114,8 +114,8 @@ async function changeStoragePath() {
   console.log(result);
   // window.fileBrowser.showFolderPicker();
   if (result !== undefined && !!result[0]) {
-    alert(result[0])
-    path.value = result[0];
+    alert(result)
+    path.value = result;
     stateStore.settings.storagePath = path.value;
     saveAppState();
   }else{
