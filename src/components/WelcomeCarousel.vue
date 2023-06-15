@@ -66,7 +66,10 @@ import { ref, computed } from "vue";
 import { updateAppState } from "src/backend/appState";
 import { useStateStore } from "src/stores/appState";
 import { useI18n } from "vue-i18n";
+import { open } from '@tauri-apps/api/dialog';
+
 const { t, locale } = useI18n({ useScope: "global" });
+
 
 const props = defineProps({ modelValue: { type: Boolean, required: true } });
 const emit = defineEmits(["update:modelValue"]);
@@ -105,12 +108,18 @@ function changeLanguage(language: "en_US" | "zh_CN") {
   saveAppState();
 }
 
-function changeStoragePath() {
-  let result = window.fileBrowser.showFolderPicker();
+async function changeStoragePath() {
+  let result = await open({ directory: true });
+
+  console.log(result);
+  // window.fileBrowser.showFolderPicker();
   if (result !== undefined && !!result[0]) {
+    alert(result[0])
     path.value = result[0];
     stateStore.settings.storagePath = path.value;
     saveAppState();
+  }else{
+    alert("error jason")
   }
 }
 

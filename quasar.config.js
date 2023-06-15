@@ -207,25 +207,25 @@ module.exports = configure(function (/* ctx */) {
         // https://www.electron.build/configuration/configuration
 
         appId: 'com.researchhelper.researchhelper',
-        publish: {
-          provider: 'github',
-          releaseType: 'release',
-        },
-        linux: {
-          target: ['AppImage', 'zip'],
-          category: 'Education',
-        },
-        win: {
-          target: ['nsis', 'zip'],
-        },
-        nsis: {
-          oneClick: false,
-          allowToChangeInstallationDirectory: true,
-        },
-        mac: {
-          target: ['dmg', 'zip'],
-          category: 'public.app-category.education',
-        },
+        // publish: {
+        //   provider: 'github',
+        //   releaseType: 'release',
+        // },
+        // linux: {
+        //   target: ['AppImage', 'zip'],
+        //   category: 'Education',
+        // },
+        // win: {
+        //   target: ['nsis', 'zip'],
+        // },
+        // nsis: {
+        //   oneClick: false,
+        //   allowToChangeInstallationDirectory: true,
+        // },
+        // mac: {
+        //   target: ['dmg', 'zip'],
+        //   category: 'public.app-category.education',
+        // },
       },
     },
 
