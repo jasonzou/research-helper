@@ -41,7 +41,7 @@ export default function CustomExcalidraw(props: {
   const [notePath, setNotePath] = useState<string>('');
   const [ready, setReady] = useState<boolean>(false);
 
-  function loadExcalidraw(): InitialData | undefined {
+  async function loadExcalidraw(): InitialData | undefined {
     if (!notePath) return;
     try {
       let scene = JSON.parse(await readBinaryFile(notePath));
@@ -53,7 +53,7 @@ export default function CustomExcalidraw(props: {
     }
   }
 
-  function _saveExcalidraw(
+ async function _saveExcalidraw(
     elements: ExcalidrawElement[],
     state: ExcalidrawState,
     files: BinaryFiles
