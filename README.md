@@ -17,7 +17,7 @@ Research helper is another research manager which has is a reference management 
 
 # Contribute to Research-Helper
 
-Research Helper uses [QUASAR](https://quasar.dev) as framework. In this project, the combination of [Vue.js3](https://vuejs.org) and [Electron](https://www.electronjs.org) is used.
+Research Helper uses [QUASAR](https://quasar.dev) as framework. In this project, the combination of [Vue.js3](https://vuejs.org) and [Tauri](https://tauri.app) is used.
 
 ## Install the dependencies
 
@@ -30,8 +30,8 @@ npm install
 ## Start the electron app in development mode (hot-code reloading, error reporting, etc.)
 
 ```bash
-yarn dev # start electron app in development mode
-yarn build # build the app with debugger
+yarn tauri dev # start tauri app in development mode
+yarn tauri build # build the app with debugger
 ```
 
 # Acknowledgement
