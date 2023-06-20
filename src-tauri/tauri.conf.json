@@ -35,7 +35,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "org.research-helper",
+      "identifier": "app",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
