@@ -95,7 +95,7 @@ class PDFApplication {
   }
 
   async loadPDF(filePath: string) {
-    console.log("eeeeeeeeeeeeeeeeeeeeeeeeeeeeenter loadPDF")
+    console.log('eeeeeeeeeeeeeeeeeeeeeeeeeeeeenter loadPDF')
     // load cmaps for rendering translated fonts
     let cMapUrl = '';
     if (process.env.DEV)
@@ -104,7 +104,7 @@ class PDFApplication {
       console.log('url?', import.meta.url);
       cMapUrl = new URL('cmaps/', import.meta.url).href;
     }
-    console.log("readddddddddddddddddddy to read")
+    console.log('readddddddddddddddddddy to read')
     console.log(filePath);
     let buffer = await readBinaryFile(filePath);
     this.pdfDocument = await pdfjsLib.getDocument({

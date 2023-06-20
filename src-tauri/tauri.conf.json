@@ -15,7 +15,9 @@
       "all": true,
       "fs": {
         "all": true,
-        "scope": ["$APPDATA/data/**"]
+        "scope": [
+          "$APPDATA/data/**"
+        ]
       }
     },
     "bundle": {
@@ -33,7 +35,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "app",
+      "identifier": "org.research-helper",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
