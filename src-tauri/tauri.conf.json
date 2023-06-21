@@ -16,7 +16,7 @@
       "fs": {
         "all": true,
         "scope": [
-          "$APPDATA/data/**"
+          "$APPDATA/data/**", "$DOCUMENT/**"
         ]
       }
     },

@@ -1,9 +1,18 @@
-import { db, AppState } from '../database';
-import { join, dirname, basename, appDataDir, appLocalDataDir } from '@tauri-apps/api/path';
-import { createDir, removeDir, writeTextFile, writeBinaryFile, removeFile, renameFile as reFile, copyFile as cpFile } from '@tauri-apps/api/fs';
+/************************************************
+ * :last read/modified: 2023-06-21 [by jason]
+ */
 
-// const path = window.path;
-// const fs = window.fs;
+import { db, AppState } from '../database';
+import { join, dirname, basename, documentDir } from '@tauri-apps/api/path';
+import {
+  createDir,
+  removeDir,
+  writeTextFile,
+  writeBinaryFile,
+  removeFile,
+  renameFile as reFile,
+  copyFile as cpFile,
+} from '@tauri-apps/api/fs';
 
 /**
  * Get storagePath from database
@@ -20,15 +29,8 @@ async function storagePath(): Promise<string> {
  */
 async function createProjectFolder(projectId: string) {
   try {
-    const appDataDirPath = await appDataDir();
-    const dir = await dirname(appDataDirPath);
-    console.log(dir);
-    console.log('ooooooooooooooops')
-    const appLocalDataDirPath = await appLocalDataDir();
-    const dir1 = await dirname(appLocalDataDirPath);
-    console.log(dir1);
-    console.log('ooooooooooooooo--------------------ps')
-    let projectPath = join(dir, 'app', 'data', projectId);
+    const dir = await documentDir();
+    let projectPath = join(dir, projectId);
     console.log(projectPath);
     await createDir(await projectPath);
   } catch (error) {
@@ -61,14 +63,8 @@ async function copyFile(
 ): Promise<string | undefined> {
   try {
     let fileName = basename(srcPath);
-    console.log("________________________")
-    console.log(fileName);
-    const appDataDirPath = await appDataDir();
-    const dir = await dirname(appDataDirPath);
-    console.log(dir);
-    console.log('ooooooo-=-=-=-=-===--oooooooops')
-    let projectPath = join(dir, 'app', 'data', projectId);
-    console.log(projectPath);
+    const dir = await documentDir();
+    let projectPath = join(dir, projectId);
     let dstPath = join(await projectPath, await fileName);
     cpFile(srcPath, await dstPath);
     return dstPath;
@@ -88,7 +84,6 @@ async function createFile(
   fileName: string
 ): Promise<string | undefined> {
   try {
-    if (!path || !fs) return;
     let filePath = join(await storagePath(), projectId, fileName);
     writeTextFile(filePath);
     return filePath;
@@ -103,7 +98,6 @@ async function createFile(
  */
 function deleteFile(filePath: string) {
   try {
-    if (!fs) return;
     // we can ignore this error since rmSync is there
     removeFile(filePath);
   } catch (error) {
@@ -134,7 +128,6 @@ function renameFile(filePath: string, fileName: string) {
  */
 function changePath(srcPath: string, dstPath: string): Error | undefined {
   try {
-    if (!fs) return;
     createDir(dstPath);
     // copy all content from srcPath to dstPath
     removeDir(srcPath);

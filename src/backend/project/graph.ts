@@ -4,7 +4,7 @@
  * An Edge object has one source and multiple targets
  */
 
-import { db, Project, Note, Node, Edge } from "../database";
+import { db, Project, Note, Node, Edge } from '../database';
 
 /**
  * Create outward edges
@@ -15,10 +15,10 @@ async function createEdge(item: Project | Note) {
     let sourceNode: Node = {
       id: item._id,
       type: item.dataType,
-      label: item.dataType === "project" ? item.title : item.label,
+      label: item.dataType === 'project' ? item.title : item.label,
     };
     let edge = {
-      dataType: "edge",
+      dataType: 'edge',
       source: sourceNode.id,
       targets: [],
       sourceNode: sourceNode,
@@ -71,7 +71,7 @@ async function appendEdgeTarget(nodeId: string, item: Project | Note) {
     edge.targetNodes.push({
       id: item._id,
       type: item.dataType,
-      label: item.dataType === "project" ? item.title : item.label,
+      label: item.dataType === 'project' ? item.title : item.label,
     });
     return await db.put(edge);
   } catch (error) {
@@ -92,7 +92,7 @@ async function updateEdgeTarget(nodeId: string, item: Project | Note) {
         edge.targetNodes[i] = {
           id: item._id,
           type: item.dataType,
-          label: item.dataType === "project" ? item.title : item.label,
+          label: item.dataType === 'project' ? item.title : item.label,
         };
         return await db.put(edge);
       }
@@ -130,7 +130,7 @@ async function getOutEdge(nodeId: string): Promise<Edge | undefined> {
   try {
     let result = await db.find({
       selector: {
-        dataType: "edge",
+        dataType: 'edge',
         source: nodeId,
       },
     });
@@ -150,7 +150,7 @@ async function getInEdges(nodeId: string): Promise<Edge[] | undefined> {
   try {
     let result = await db.find({
       selector: {
-        dataType: "edge",
+        dataType: 'edge',
         targets: { $in: [nodeId] },
       },
     });

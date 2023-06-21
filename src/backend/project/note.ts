@@ -3,7 +3,13 @@ import { uid } from 'quasar';
 import { Buffer } from 'buffer';
 import { createFile, deleteFile } from './file';
 
-import { exists, readBinaryFile, writeBinaryFile, createDir, writeFile } from '@tauri-apps/api/fs';
+import {
+  exists,
+  readBinaryFile,
+  writeBinaryFile,
+  createDir,
+  writeFile,
+} from '@tauri-apps/api/fs';
 import { join, dirname, extname } from '@tauri-apps/api/path';
 
 // const fs = window.fs;
@@ -135,8 +141,7 @@ async function loadNote(noteId: string, notePath?: string): Promise<string> {
     if (await exists(note.path)) {
       let noteContent = await readBinaryFile(note.path);
       return noteContent;
-    }
-    else return '';
+    } else return '';
   } catch (error) {
     if ((error as Error).name == 'not_found') {
       if (notePath) return await readBinaryFile(notePath);

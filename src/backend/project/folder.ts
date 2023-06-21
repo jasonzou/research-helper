@@ -1,5 +1,5 @@
-import { db, Folder } from "../database";
-import { sortTree } from "./utils";
+import { db, Folder } from '../database';
+import { sortTree } from './utils';
 
 async function getFolder(folderId: string): Promise<Folder | undefined> {
   try {
@@ -17,7 +17,7 @@ async function getFolderTree(): Promise<Folder[] | undefined> {
   try {
     let result = await db.find({
       selector: {
-        dataType: "folder",
+        dataType: 'folder',
       },
     });
     let docs = result.docs;
@@ -26,12 +26,12 @@ async function getFolderTree(): Promise<Folder[] | undefined> {
     if (docs.length == 0) {
       // create library folder for user if there is none
       let library = {
-        _id: "library",
-        _rev: "",
-        label: "Library",
-        icon: "home",
+        _id: 'library',
+        _rev: '',
+        label: 'Library',
+        icon: 'home',
         children: [],
-        dataType: "folder",
+        dataType: 'folder',
       } as Folder;
       await db.put(library);
       return [library];
@@ -52,7 +52,7 @@ async function getFolderTree(): Promise<Folder[] | undefined> {
     }
 
     let tree = {} as Folder;
-    _dfs(folders["library"], tree);
+    _dfs(folders['library'], tree);
     sortTree(tree);
 
     return [tree];
@@ -69,10 +69,10 @@ async function addFolder(parentId: string) {
   try {
     // add to database
     let result = await db.post({
-      label: "New Folder",
-      icon: "folder",
+      label: 'New Folder',
+      icon: 'folder',
       children: [],
-      dataType: "folder",
+      dataType: 'folder',
     });
     let node: Folder = await db.get(result.id);
 
@@ -122,7 +122,7 @@ async function deleteFolder(folderId: string) {
     // delete subfolders using dfs
     result = await db.find({
       selector: {
-        dataType: "folder",
+        dataType: 'folder',
       },
     });
     let docs = result.docs;
@@ -153,7 +153,7 @@ async function getParentFolder(folderId: string): Promise<Folder | undefined> {
   try {
     let result = await db.find({
       selector: {
-        dataType: "folder",
+        dataType: 'folder',
         children: { $in: [folderId] },
       },
     });

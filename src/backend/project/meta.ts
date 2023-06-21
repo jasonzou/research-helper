@@ -1,9 +1,9 @@
-import Cite from "citation-js";
-import "@citation-js/plugin-isbn"; // must import this so we can use isbn as identifier
-import { getProjectsByFolderId } from "./project";
-import { exportFile } from "quasar";
+import Cite from 'citation-js';
+import '@citation-js/plugin-isbn'; // must import this so we can use isbn as identifier
+import { getProjectsByFolderId } from './project';
+import { exportFile } from 'quasar';
 
-import { Folder, Meta, Project } from "../database";
+import { Folder, Meta, Project } from '../database';
 import { readBinaryFile } from '@tauri-apps/api/fs';
 
 /**
@@ -20,7 +20,7 @@ async function getMeta(
 ): Promise<any> {
   try {
     const data = await Cite.async(identifier);
-    if (!format || format === "json") {
+    if (!format || format === 'json') {
       let metas = data.data;
       for (let i in metas) delete metas[i]._graph;
       return metas;
@@ -46,19 +46,19 @@ async function exportMeta(
 ) {
   try {
     let projects: Project[] = await getProjectsByFolderId(folder._id);
-    console.log("projects", projects);
+    console.log('projects', projects);
     let meta = await getMeta(projects, format, options);
-    if (format === "json") {
+    if (format === 'json') {
       exportFile(`${folder.label}.json`, JSON.stringify(meta), {
-        mimeType: "application/json",
+        mimeType: 'application/json',
       });
     } else {
-      let extension = "";
-      if (["bibtex", "biblatex"].includes(format)) extension = "bib";
-      else if (format === "bibliography") extension = "txt";
-      else if (format === "ris") extension = "ris";
+      let extension = '';
+      if (['bibtex', 'biblatex'].includes(format)) extension = 'bib';
+      else if (format === 'bibliography') extension = 'txt';
+      else if (format === 'ris') extension = 'ris';
       exportFile(`${folder.label}.${extension}`, meta, {
-        mimeType: "text/plain",
+        mimeType: 'text/plain',
       });
     }
   } catch (error) {
@@ -74,7 +74,7 @@ async function exportMeta(
  */
 async function importMeta(filePath: string): Promise<any> {
   let data = await readBinaryFile(filePath);
-  return await getMeta(data, "json");
+  return await getMeta(data, 'json');
 }
 
 export { getMeta, exportMeta, importMeta };

@@ -1,6 +1,6 @@
-import { db, Meta, Project } from "../database";
-import { uid } from "quasar";
-import { createProjectFolder, deleteProjectFolder } from "./file";
+import { db, Meta, Project } from '../database';
+import { uid } from 'quasar';
+import { createProjectFolder, deleteProjectFolder } from './file';
 
 /**
  * Add empty projet to database, creates project folder and returns the project
@@ -13,15 +13,15 @@ async function addProject(folderId: string): Promise<Project | void> {
     // create empty project entry
     let project = {
       _id: uid(),
-      _rev: "",
-      dataType: "project",
-      label: "New Project",
-      title: "New Project",
-      path: "",
+      _rev: '',
+      dataType: 'project',
+      label: 'New Project',
+      title: 'New Project',
+      path: '',
       tags: [] as string[],
-      folderIds: ["library"],
+      folderIds: ['library'],
     } as Project;
-    if (folderId != "library") project.folderIds.push(folderId);
+    if (folderId != 'library') project.folderIds.push(folderId);
 
     // create actual folder for containing its files
     await createProjectFolder(project._id);
@@ -69,7 +69,7 @@ async function deleteProject(
       // (do not rely on project.path because it might be empty)
       await deleteProjectFolder(projectId);
     } else {
-      if (folderId === undefined) throw new Error("folderId is needed");
+      if (folderId === undefined) throw new Error('folderId is needed');
       project.folderIds = project.folderIds.filter((id) => id != folderId);
       await db.put(project);
     }
@@ -134,7 +134,7 @@ async function getProject(projectId: string): Promise<Project | undefined> {
 async function getAllProjects(): Promise<Project[]> {
   let result = await db.find({
     selector: {
-      dataType: "project",
+      dataType: 'project',
     },
   });
   return result.docs as Project[];
@@ -148,7 +148,7 @@ async function getAllProjects(): Promise<Project[]> {
 async function getProjectsByFolderId(folderId: string): Promise<Project[]> {
   let result = await db.find({
     selector: {
-      dataType: "project",
+      dataType: 'project',
       folderIds: { $in: [folderId] },
     },
   });

@@ -70,7 +70,6 @@ import { open } from '@tauri-apps/api/dialog';
 
 const { t, locale } = useI18n({ useScope: "global" });
 
-
 const props = defineProps({ modelValue: { type: Boolean, required: true } });
 const emit = defineEmits(["update:modelValue"]);
 

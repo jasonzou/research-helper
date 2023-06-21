@@ -1,5 +1,6 @@
-import { Folder, Project } from "../database";
+import { Folder, Project } from '../database';
 type TreeNode = Folder | Project;
+
 /**
  * Sort children of a tree node by labels
  * @param root - the root treenode
